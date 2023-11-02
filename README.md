@@ -115,4 +115,7 @@ Para executar, entra na pasta `animation3D`
 Execute:
 `g++ *.cpp  Error/*.cpp Utils/*.cpp -o app -std=c++11 -Wall -lGL -lGLU -lglut -lGLEW -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor && ./app`.
 
+## Resultado
 
+
+<img src="ImagensReadme/gif-animacao-3d.gif">
