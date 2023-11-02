@@ -11,6 +11,9 @@
 #include"./Error/Error.h"
 #include "./Utils/Utils.h"
 
+const float width = 800;
+const float height = 680;
+
 unsigned int programId = 0;
 unsigned int cubeVAO = 0;
 unsigned int indexOffSet = 0;
@@ -217,7 +220,7 @@ void initOpenGL(){
     matrixId = glGetUniformLocation(programId, "Matrix");
     glEnable(GL_DEPTH_TEST);
 
-    projection = glm::perspective(glm::radians(45.f), 800.f / 680.f, 0.1f, 10.f);
+    projection = glm::perspective(glm::radians(45.f), width / height, 0.1f, 10.f);
     projection = projection * glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -5.f));
     //cria a matriz de projeção, que será usada para posicionar os objetos nas coordenadas da cena
 }
@@ -281,7 +284,7 @@ int main(){
         return -1;
 
     /* Cria uma janela de tamanho 800x600 no contexto opengl */
-    window = glfwCreateWindow(800, 680, "Animacao 3D - projecao perpectiva", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Animacao 3D - projecao perpectiva, rotacao e transalacao", NULL, NULL);
     if (!window)
     {
         fatalError("Janela GLFW não foi criada!");
