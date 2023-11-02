@@ -94,7 +94,7 @@ com o plano de recorte de frente á `0.1` unidades da câmera e o plano de recor
 são a distânca da câmera ao plano de frente, e ao plano de fundo.
 
 #### Visão do Frustrum
-<img src="animation3D/imagensReadme/A-viewing-frustum-defined-in-OpenGL-to-emulate-the-real-camera.png">
+<img src="ImagensReadme/A-viewing-frustum-defined-in-OpenGL-to-emulate-the-real-camera.png">
 
 ## Shader de Vértices
 O shader de vértices recebe duas váriaveis de entrada, 
