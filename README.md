@@ -202,6 +202,11 @@ Contém uma versão executável dentro da pasta `animation3D`.
 
 <img src="ImagensReadme/gif-animacao-3d.gif">
 
+## Repositório
+
+O código fonte está disponível no repositório:
+https://github.com/victorlelissoares/computerGra
+
 ## Fontes
 
 As fontes consultadas para fazer esse trabalho foram:
