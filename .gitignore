@@ -1,5 +1,3 @@
 cmake-build-debug
 CMakeLists.txt
-animation3D/
 .idea
-./app
