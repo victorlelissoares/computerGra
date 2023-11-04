@@ -27,8 +27,8 @@ float incremento = 0.01; //quanto a escala muda por iteração
 bool aumentando = true; //direção inicial da mudança de escala
 
 void CompileAndLinkShaders();
-void CreateCube();
-void initOpenGL();
+void criaCubo();
+void inicializaOpenGL();
 void desenha(float dt);
 
 int main(){
@@ -56,17 +56,17 @@ int main(){
         return -1;
     }
 
-    initOpenGL();
+    inicializaOpenGL();
 
-    float startTime = glfwGetTime();
+    float tempoInicial = glfwGetTime();
 
     while (!glfwWindowShouldClose(window)){
 
-        float currentTime = glfwGetTime();
-        float dt = currentTime - startTime;
+        float tempoAtual = glfwGetTime();
+        float deltaTime = tempoAtual - tempoInicial;
 
         //passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
-        desenha(dt);
+        desenha(deltaTime);
 
         glfwSwapBuffers(window);
 
@@ -78,7 +78,7 @@ int main(){
 }
 
 //Cubo formado por triangulos, cada face é formada por dois triângulos
-void CreateCube(){
+void criaCubo(){
     glm::vec3 points[] = {
             // frente
             glm::vec3(-0.5f, +0.5f, +0.5f),//0
@@ -223,9 +223,9 @@ void CreateCube(){
     glBindVertexArray(0);
 }
 
-void initOpenGL(){
+void inicializaOpenGL(){
 
-    CreateCube();
+    criaCubo();
     //compila e linka os Shaders de fragmentos e de vétices, resultando no programa (shade de vérticer+fragmento)
     CompileAndLinkShaders();
 
@@ -235,7 +235,7 @@ void initOpenGL(){
 
     projection = glm::perspective(glm::radians(45.f), width / height, 0.1f, 10.f);
     projection = projection * glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -5.f));
-    //cria a matriz de projeção, que será usada para posicionar os objetos nas coordenadas da cena
+    //cria a matriz de projeção, que será usada para posicionar os objetos nas coordenadas da cena, que é 5 unidades para dentro da tela (z=-5.f)
 }
 
 void desenha(float dt){
@@ -256,10 +256,10 @@ void desenha(float dt){
 
     //desenha o primeiro cubo
     //leva do modelo para o mundo
-    glm::mat4 model = glm::rotate(glm::mat4(1.f), +dt, glm::vec3(0.f, 1.f, 0.f));
-    model = glm::scale(glm::mat4(1.0f), glm::vec3(escalaAtual/2, escalaAtual, escalaAtual/4));
-    model = glm::rotate(model, 1.75f * dt, glm::vec3(1.f, 0.f, 0.f));
-    model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));
+    glm::mat4 model = glm::rotate(glm::mat4(1.f), +dt, glm::vec3(0.f, 1.f, 0.f));//rotaciona no eixo y
+    model = glm::scale(glm::mat4(1.0f), glm::vec3(escalaAtual/2, escalaAtual, escalaAtual/4));//aplica escala em todos os eixos
+    model = glm::rotate(model, 1.75f * dt, glm::vec3(1.f, 0.f, 0.f));//rotaciona no eixo x
+    model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));//rotaciona no eixo z
     //leva do mundo para a projeção
     glm::mat4 finalMatrix = projection * model;
 
@@ -273,7 +273,9 @@ void desenha(float dt){
 
 
     //desenha o segundo cubo
+    //as rotaçõoes são as mesmas do cubo anteior, somente alterando o sentido de rotação
     model = glm::rotate(glm::mat4(1.f), -dt, glm::vec3(0.f, 1.f, 0.f));
+    //translada o cubo no eixo x e y
     model = glm::translate(model, glm::vec3(-2.0f, -0.99f, 0.f));
     model = glm::rotate(model, 1.75f * dt, glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));
@@ -288,7 +290,9 @@ void desenha(float dt){
 
 
     //desenha o 3 cubo
+    //as rotaçõoes são as mesmas do cubo anteior, somente alterando o sentido de rotação
     model = glm::rotate(glm::mat4(1.f), -dt, glm::vec3(0.f, -1.f, 0.f));
+    //translada o cubo no eixo x e y
     model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.f));
     model = glm::rotate(model, 1.75f * dt, glm::vec3(0.f, -1.f, 0.f));
     model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, -1.f));

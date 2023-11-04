@@ -1,9 +1,8 @@
-# Documentação do Código OpenGL 3D
+# Animação 3D - Projeção Perspectiva (Frustrum), Escala, Rotação e Translação
 
-Este documento fornece uma breve documentação do código em C++ que 
-utiliza a biblioteca OpenGL para criar uma aplicação 3D simples. O código é 
-dividido em várias partes, incluindo a inicialização do OpenGL, a criação de 
-um cubo 3D, a compilação e ligação de shaders, bem como a renderização dos objetos.
+Este documento fornece uma documentação/explicação sobre o código 
+elaborado e um detalhamento dos recursos utilizados para realizar o mesmo, bem como seu resultado
+e as fontes utilizadas para produzi-lo.
 
 ## Autores: 
 
@@ -22,6 +21,10 @@ Para executar o código, você precisará ter as seguintes bibliotecas instalada
 - GLM: Uma biblioteca para matemática para OpengGL.
 - Um compilador C++ compatível com C++11.
 
+Para instalar os recursos necessários em uma distribuição `linux` baseada em `debian`,
+execute:
+`sudo apt-get install libgl1-mesa-dev xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libxmu-dev libxi-dev libglfw3 libglfw3-dev`
+
 
 ## Variáveis Globais
 
@@ -30,6 +33,13 @@ Para executar o código, você precisará ter as seguintes bibliotecas instalada
 - `indexOffSet`: Um deslocamento de índice para o buffer.
 - `matrixId`: O identificador para a matriz no shader.
 - `projection`: Uma matriz de projeção.
+- 
+  `float escalaMin` : Esta variável representa o fator de escala mínimo, que será aplicado a um dos cubos. 
+- `float escalaMax` : Esta variável representa o fator de escala máximo, que será aplicado a um dos cubos.
+- `float escalaAtual` : A variável `escalaAtual` mantém o valor atual do fator de escala. Inicialmente, ela é definida como 1.0, o que significa que não há ampliação ou redução.
+- `float incremento` : Esta variável `incremento` especifica quanto a escala deve ser alterada a cada iteração. No caso, o valor é 0.01, o que sugere um aumento ou diminuição gradual da escala.
+- `bool aumentando` : Aqui, temos uma variável booleana `aumentando`, que define a direção inicial da mudança de escala. Quando é `true`, significa que a escala está aumentando no início. Se for `false`, indica que a escala está diminuindo no início.
+
 
 ## Funções
 
@@ -44,11 +54,11 @@ Essa função cria, compila e vincula shaders (vertex e fragment shaders) para
 criar um programa OpenGL. Ele usa os shaders localizados em "./shaders/Main.vert" e 
 "./shaders/Main.frag". Os shaders são vinculados ao `programId`.
 
-### `CreateCube()`
+### `criaCubo()`
 
-A função CreateCube() é responsável por criar um cubo 3D para ser renderizado no 
+A função `criaCubo()` é responsável por criar um cubo 3D para ser renderizado no 
 contexto OpenGL. Esta função define os vértices, cores e índices do cubo e configura 
-os buffers e o Vertex Array Object (VAO) necessários para renderização. Vamos examinar o 
+os buffers e o `Vertex Array Object (VAO)` necessários para renderização. Vamos examinar o 
 funcionamento detalhado dessa função:
 
 Definição de Vértices, Cores e Índices:
@@ -93,13 +103,65 @@ Desvinculação do VAO:
 
 Após a configuração dos atributos de vértice, o VAO é desvinculado com glBindVertexArray(0).
 
-### `initOpenGL()`
+### `inicializaOpenGL()`
 
-Inicializa o OpenGL, chama `CreateCube()` para criar o cubo, chama `CompileAndLinkShaders()` para compilar e vincular os shaders, configura a matriz de projeção e obtém o identificador da matriz no shader.
+Inicializa o OpenGL, chama `criaCubo()` para criar o cubo, chama `CompileAndLinkShaders()` para compilar e vincular os shaders, configura a matriz de projeção e obtém o identificador da matriz no shader.
 
 ### `desenha(float dt)`
 
 Esta função é responsável por desenhar o cubo na tela. Ela aplica transformações matriciais aos cubos e, em seguida, desenha-os usando os shaders vinculados. O `dt` é usado para animar os cubos.
+
+#### Transformações Aplicadas no cubo do meio
+1. `glm::mat4 model = glm::rotate(glm::mat4(1.f), +dt, glm::vec3(0.f, 1.f, 0.f));`
+  - Rotaciona o objeto no eixo Y por uma quantidade de `dt` radianos.
+
+2. `model = glm::scale(glm::mat4(1.0f), glm::vec3(escalaAtual/2, escalaAtual, escalaAtual/4));`
+  - Aplica uma escala ao objeto nos três eixos, com os fatores de escala determinados por `escalaAtual`.
+
+3. `model = glm::rotate(model, 1.75f * dt, glm::vec3(1.f, 0.f, 0.f));`
+  - Rotaciona o objeto no eixo X por uma quantidade de `1.75 * dt` radianos.
+
+4. `model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));`
+  - Rotaciona o objeto no eixo Z por uma quantidade de `0.75 * dt` radianos.
+
+5. `glm::mat4 finalMatrix = projection * model;`
+  - Combina a matriz de projeção com a matriz de modelo, levando o objeto do espaço do mundo para o espaço de projeção.
+
+#### Transformações Aplicadas no cubo da esquerda
+
+1. `model = glm::rotate(glm::mat4(1.f), -dt, glm::vec3(0.f, 1.f, 0.f));`
+  - Rotação: Rotaciona a matriz `model` em torno do eixo Y por um ângulo negativo `dt` de radianos.
+
+2. `model = glm::translate(model, glm::vec3(-2.0f, -0.99f, 0.f));`
+  - Translação: Translada a matriz `model` nas direções X e Y por -2.0f e -0.99f, respectivamente.
+
+3. `model = glm::rotate(model, 1.75f * dt, glm::vec3(0.f, 1.f, 0.f));`
+  - Rotação: Rotaciona a matriz `model` em torno do eixo Y por um ângulo de 1.75 vezes `dt` de radianos.
+
+4. `model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));`
+  - Rotação: Rotaciona a matriz `model` em torno do eixo Z por um ângulo de 0.75 vezes `dt` de radianos.
+
+5. `finalMatrix = projection * model;`
+  - Composição: Combina as matrizes `projection` e `model` multiplicando-as para transformar os objetos do espaço do modelo para o espaço de projeção.
+
+
+#### Transformações Aplicadas no cubo da direita
+
+1. `model = glm::rotate(glm::mat4(1.f), -dt, glm::vec3(0.f, -1.f, 0.f));`
+  - Rotação do modelo em torno do eixo y negativo por um ângulo de -dt.
+
+2. `model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.f));`
+  - Translação do modelo no espaço em 2 unidades ao longo do eixo x, 0.5 unidades ao longo do eixo y, e 0 unidades ao longo do eixo z.
+
+3. `model = glm::rotate(model, 1.75f * dt, glm::vec3(0.f, -1.f, 0.f));`
+  - Rotação adicional do modelo em torno do eixo y negativo por um ângulo de 1.75 * dt.
+
+4. `model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, -1.f));`
+  - Rotação adicional do modelo em torno do eixo z negativo por um ângulo de 0.75 * dt.
+
+5. `finalMatrix = projection * model;`
+  - Combinação da matriz de projeção com a matriz de modelo para obter a matriz final usada na renderização, que leva o modelo do espaço do mundo para o espaço de projeção.
+
 
 ### `main()`
 
