@@ -193,7 +193,7 @@ Ele pega a cor de entrada `colorOut` e a define como a cor de saída
 Para executar, entre na pasta `animation3D`.
 
 Execute:
-`g++ *.cpp  Error/*.cpp Utils/*.cpp -o app -std=c++11 -Wall -lGL -lGLU -lglut -lGLEW -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor && ./app`.
+` g++ *.cpp  Utils/*.cpp -o app -std=c++11 -Wall -lGL -lGLU -lglut -lGLEW -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor && ./app`.
 
 Contém uma versão executável dentro da pasta `animation3D`.
 
