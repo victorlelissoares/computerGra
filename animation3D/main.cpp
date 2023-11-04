@@ -1,195 +1,208 @@
+#include<iostream>
+#include<string>
+
 #include<GL/glew.h>
 #include <GLFW/glfw3.h>
-#include<iostream>
-
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
-#include<string>
+#include "./Utils/utils.h"
 
-#include"./Error/Error.h"
-#include "./Utils/Utils.h"
-
+//variaveis globais
 const float width = 800;
 const float height = 680;
 
+int matrixId;
 unsigned int programId = 0;
 unsigned int cubeVAO = 0;
 unsigned int indexOffSet = 0;
-
-int matrixId;
 glm::mat4 projection(1.f);
 
-void CompileAndLinkShaders(){
-    // 1. Criamos os nossos Objetos: 
-    //    Programa = Vertex Shader + Fragment Shader    
-    programId = glCreateProgram();
-    unsigned int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-    unsigned int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+//utilizados para fazer a escala do cubo do meio da tela
+float escalaMin = 0.5f; // fator de escala mínimo
+float escalaMax = 1.9f; // fator de escala máximo
+float escalaAtual = 1.0f; //valor inicial do fator de escala
+float incremento = 0.01; //quanto a escala muda por iteração
+bool aumentando = true; //direção inicial da mudança de escala
 
-    // 2. Passamos as strings para com códigos GLSL
-    //    para o tipo const char* = código fonte final
-    std::string vsCode, fsCode;
-    vsCode = ReadProgramSource("Shaders/Main.vert");
-    fsCode = ReadProgramSource("Shaders/Main.frag");
+void CompileAndLinkShaders();
+void CreateCube();
+void initOpenGL();
+void desenha(float dt);
 
-    const char* vsFinalCode = vsCode.c_str();
-    const char* fsFinalCode = fsCode.c_str();
+int main(){
+    GLFWwindow* window;
 
-    // 3. Copiamos o código fonte final 
-    //para o Shader anteriormente criado
-    glShaderSource(vertexShaderId, 1, &vsFinalCode, NULL);
-    glShaderSource(fragmentShaderId, 1, &fsFinalCode, NULL);
+    if (!glfwInit()) {
+        fprintf(stderr, "Erro ao iniciar GLFW!");
+        return -1;
+    }
 
-    // 4. Compilamos os Shaders
-    glCompileShader(vertexShaderId);
-    glCompileShader(fragmentShaderId);
+    /* Cria uma janela de tamanho 800x600 no contexto opengl */
+    window = glfwCreateWindow(width, height, "Animacao 3D - projecao perpectiva, rotacao, translacao e escala", NULL, NULL);
+    if (!window){
+        fprintf(stderr, "Janela GLFW não foi criada!");
+        glfwTerminate();
+        return -1;
+    }
 
-    // 5. Anexamos os Shaders compilados ao Programa
-    glAttachShader(programId, vertexShaderId);
-    glAttachShader(programId, fragmentShaderId);
+    /* Torna a janela o contexto atual da opengl */
+    glfwMakeContextCurrent(window);
 
+    GLenum status = glewInit();
+    if (GLEW_OK != status){
+        fprintf(stderr, "Erro ao Inicializar glew!");
+        return -1;
+    }
 
-    //6. Link
-    glLinkProgram(programId);
+    initOpenGL();
 
-    //7. Delete
-    glDeleteShader(vertexShaderId);
-    glDeleteShader(fragmentShaderId);
+    float startTime = glfwGetTime();
 
+    while (!glfwWindowShouldClose(window)){
 
-    //8. Utilizar o programa
-    glUseProgram(programId);
+        float currentTime = glfwGetTime();
+        float dt = currentTime - startTime;
 
+        //passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
+        desenha(dt);
+
+        glfwSwapBuffers(window);
+
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    return 0;
 }
 
+//Cubo formado por triangulos, cada face é formada por dois triângulos
 void CreateCube(){
-
     glm::vec3 points[] = {
-        // frente
-        glm::vec3(-0.5f, +0.5f, +0.5f),//0
-        glm::vec3(-0.5f, -0.5f, +0.5f),//1
-        glm::vec3(+0.5f, -0.5f, +0.5f),//2
-        glm::vec3(+0.5f, +0.5f, +0.5f),//3
+            // frente
+            glm::vec3(-0.5f, +0.5f, +0.5f),//0
+            glm::vec3(-0.5f, -0.5f, +0.5f),//1
+            glm::vec3(+0.5f, -0.5f, +0.5f),//2
+            glm::vec3(+0.5f, +0.5f, +0.5f),//3
 
-        //fundo
-        glm::vec3(+0.5f, +0.5f, -0.5f),//4
-        glm::vec3(+0.5f, -0.5f, -0.5f),//5
-        glm::vec3(-0.5f, -0.5f, -0.5f),//6
-        glm::vec3(-0.5f, +0.5f, -0.5f), //7
+            //fundo
+            glm::vec3(+0.5f, +0.5f, -0.5f),//4
+            glm::vec3(+0.5f, -0.5f, -0.5f),//5
+            glm::vec3(-0.5f, -0.5f, -0.5f),//6
+            glm::vec3(-0.5f, +0.5f, -0.5f), //7
 
-        //os demais lados do cubo são combinações dos demais vértices escritos anteriormente
+            //os demais lados do cubo são combinações dos demais vértices escritos anteriormente
     };
 
     glm::vec3 vertices[] = {
-        //frente
-       points[0],//0
-       points[1],//1
-       points[2],//2 
-       points[3],//3
+            //frente
+            points[0],//0
+            points[1],//1
+            points[2],//2
+            points[3],//3
 
-       //fundo
-       points[4],//4 
-       points[5],//5 
-       points[6],//6 
-       points[7],//7
+            //fundo
+            points[4],//4
+            points[5],//5
+            points[6],//6
+            points[7],//7
 
-       //direita
-       points[3],//8
-       points[2],//9 
-       points[5],//10 
-       points[4],//11
+            //direita
+            points[3],//8
+            points[2],//9
+            points[5],//10
+            points[4],//11
 
-       //esquerda
-       points[7],//12 
-       points[6],//13 
-       points[1],//14 
-       points[0],//15
+            //esquerda
+            points[7],//12
+            points[6],//13
+            points[1],//14
+            points[0],//15
 
-       //cima
-       points[7],//16 
-       points[0],//17 
-       points[3],//18 
-       points[4],//19
+            //cima
+            points[7],//16
+            points[0],//17
+            points[3],//18
+            points[4],//19
 
-       //baixo
-       points[1],//20 
-       points[6],//21 
-       points[5],//22 
-       points[2] //23	
+            //baixo
+            points[1],//20
+            points[6],//21
+            points[5],//22
+            points[2] //23
     };
 
     GLubyte colors[] = {
-        //face da frente vermelha
-       255, 0, 0,
-       255, 0, 0,
-       255, 0, 0,
-       255, 0, 0,
+            //face da frente vermelha
+            255, 0, 0,
+            255, 0, 0,
+            255, 0, 0,
+            255, 0, 0,
 
-       //face de trás verde
-       0, 255, 0,
-       0, 255, 0,
-       0, 255, 0,
-       0, 255, 0,
+            //face de trás verde
+            0, 255, 0,
+            0, 255, 0,
+            0, 255, 0,
+            0, 255, 0,
 
-       //face da direita azul
-        0, 0, 255,
-        0, 0, 255,
-        0, 0, 255,
-        0, 0, 255,
+            //face da direita azul
+            0, 0, 255,
+            0, 0, 255,
+            0, 0, 255,
+            0, 0, 255,
 
-        //face da esquerda amarela
-        255, 255, 0,
-        255, 255, 0,
-        255, 255, 0,
-        255, 255, 0,
+            //face da esquerda amarela
+            255, 255, 0,
+            255, 255, 0,
+            255, 255, 0,
+            255, 255, 0,
 
-        //face de cima magenta
-        255, 0, 255,
-        255, 0, 255,
-        255, 0, 255,
-        255, 0, 255,
+            //face de cima magenta
+            255, 0, 255,
+            255, 0, 255,
+            255, 0, 255,
+            255, 0, 255,
 
-        //face debaixo ciano
-        0, 255, 255,
-        0, 255, 255,
-        0, 255, 255,
-        0, 255, 255
+            //face debaixo ciano
+            125, 255, 255,
+            125, 15, 255,
+            125, 255, 255,
+            125, 255, 25
     };
 
     unsigned int indices[] = {
-        0,   1,  2,  0,  2,  3,// frente
-        4,   5,  6,  4,  6,  7,// trás
-        8,   9, 10,  8, 10, 11,// direita
-        12, 13, 14, 12, 14, 15,// esquerda
-        16, 17, 18, 16, 18, 19,// cima
-        20, 21, 22, 20, 22, 23 // baixo
+            0,   1,  2,  0,  2,  3,// frente
+            4,   5,  6,  4,  6,  7,// trás
+            8,   9, 10,  8, 10, 11,// direita
+            12, 13, 14, 12, 14, 15,// esquerda
+            16, 17, 18, 16, 18, 19,// cima
+            20, 21, 22, 20, 22, 23 // baixo
     };
 
     unsigned int BufferId = 0;
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &BufferId);
 
-    //The buffer is created but it will not be filled
+    //Criando buffer único
     glBindBuffer(GL_ARRAY_BUFFER, BufferId);
     glBufferData(GL_ARRAY_BUFFER,
-        sizeof(vertices) + sizeof(colors) + sizeof(indices), 0, GL_STATIC_DRAW);
+                 sizeof(vertices) + sizeof(colors) + sizeof(indices), 0, GL_STATIC_DRAW);
 
-    // Fill with vertices
+    // Preenchendo sub buffer com vértices
     unsigned int currentOffSet = 0;
     glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-        sizeof(vertices), vertices);
+                    sizeof(vertices), vertices);
 
-    // Fill with colors
+    // Preenchendo sub buffer com cores
     currentOffSet += sizeof(vertices);
     glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-        sizeof(colors), colors);
+                    sizeof(colors), colors);
 
-    // Fill with indices
+    // Preenchendo sub buffer com os indices
     currentOffSet += sizeof(colors);
     glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-        sizeof(indices), indices);
+                    sizeof(indices), indices);
 
 
     indexOffSet = currentOffSet;
@@ -204,14 +217,14 @@ void CreateCube(){
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE,
-            3 * sizeof(GLubyte), (void*)sizeof(vertices));
+                              3 * sizeof(GLubyte), (void*)sizeof(vertices));
 
     }
     glBindVertexArray(0);
 }
 
 void initOpenGL(){
-    
+
     CreateCube();
     //compila e linka os Shaders de fragmentos e de vétices, resultando no programa (shade de vérticer+fragmento)
     CompileAndLinkShaders();
@@ -226,12 +239,25 @@ void initOpenGL(){
 }
 
 void desenha(float dt){
+    //faz o cubo no centro da tela aumentar e diminuir
+    if (aumentando) {
+        escalaAtual += incremento;
+        if (escalaAtual >= escalaMax)
+            aumentando = false;
+
+    } else {
+        escalaAtual -= incremento;
+        if (escalaAtual <= escalaMin)
+            aumentando = true;
+
+    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //desenha o primeiro cubo
     //leva do modelo para o mundo
     glm::mat4 model = glm::rotate(glm::mat4(1.f), +dt, glm::vec3(0.f, 1.f, 0.f));
+    model = glm::scale(glm::mat4(1.0f), glm::vec3(escalaAtual/2, escalaAtual, escalaAtual/4));
     model = glm::rotate(model, 1.75f * dt, glm::vec3(1.f, 0.f, 0.f));
     model = glm::rotate(model, 0.75f * dt, glm::vec3(0.f, 0.f, 1.f));
     //leva do mundo para a projeção
@@ -277,49 +303,45 @@ void desenha(float dt){
     glBindVertexArray(0);
 }
 
-int main(){
-    GLFWwindow* window;
+void CompileAndLinkShaders(){
+    // 1. Criamos os nossos Objetos:
+    //    Programa = Vertex Shader + Fragment Shader
+    programId = glCreateProgram();
+    unsigned int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
-    if (!glfwInit())
-        return -1;
+    // 2. Passamos as strings para com códigos GLSL
+    //    para o tipo const char* = código fonte final
+    std::string vsCode, fsCode;
+    vsCode = ReadProgramSource("Shaders/main.vert");
+    fsCode = ReadProgramSource("Shaders/main.frag");
 
-    /* Cria uma janela de tamanho 800x600 no contexto opengl */
-    window = glfwCreateWindow(width, height, "Animacao 3D - projecao perpectiva, rotacao e transalacao", NULL, NULL);
-    if (!window)
-    {
-        fatalError("Janela GLFW não foi criada!");
-        glfwTerminate();
-        return -1;
-    }
+    const char* vsFinalCode = vsCode.c_str();
+    const char* fsFinalCode = fsCode.c_str();
 
-    /* Torna a janela o contexto atual da opengl */
-    glfwMakeContextCurrent(window);
+    // 3. Copiamos o código fonte final
+    //para o Shader anteriormente criado
+    glShaderSource(vertexShaderId, 1, &vsFinalCode, NULL);
+    glShaderSource(fragmentShaderId, 1, &fsFinalCode, NULL);
 
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        fatalError("Erro no GLEW!");
-    }
+    // 4. Compilamos os Shaders
+    glCompileShader(vertexShaderId);
+    glCompileShader(fragmentShaderId);
 
-    initOpenGL();
+    // 5. Anexamos os Shaders compilados ao Programa
+    glAttachShader(programId, vertexShaderId);
+    glAttachShader(programId, fragmentShaderId);
 
 
-    float startTime = glfwGetTime();
+    //6. Link
+    glLinkProgram(programId);
 
-    while (!glfwWindowShouldClose(window))
-    {
+    //7. Delete
+    glDeleteShader(vertexShaderId);
+    glDeleteShader(fragmentShaderId);
 
-        float currentTime = glfwGetTime();
-        float dt = currentTime - startTime;
 
-        //passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
-        desenha(dt);
+    //8. Utilizar o programa
+    glUseProgram(programId);
 
-        glfwSwapBuffers(window);
-
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
 }

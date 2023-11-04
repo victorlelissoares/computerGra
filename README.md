@@ -1,6 +1,17 @@
 # Documentação do Código OpenGL 3D
 
-Este documento fornece uma breve documentação do código em C++ que utiliza a biblioteca OpenGL para criar uma aplicação 3D simples. O código é dividido em várias partes, incluindo a inicialização do OpenGL, a criação de um cubo 3D, a compilação e ligação de shaders, bem como a renderização dos objetos.
+Este documento fornece uma breve documentação do código em C++ que 
+utiliza a biblioteca OpenGL para criar uma aplicação 3D simples. O código é 
+dividido em várias partes, incluindo a inicialização do OpenGL, a criação de 
+um cubo 3D, a compilação e ligação de shaders, bem como a renderização dos objetos.
+
+## Autores: 
+
+####  Victor Lelis
+
+#### Matheus Vieira
+
+#### Victor Ramires
 
 ## Requisitos
 
@@ -24,15 +35,21 @@ Para executar o código, você precisará ter as seguintes bibliotecas instalada
 
 ### `ReadProgramSource(const std::string filePath)`
 
-Esta função lê o código-fonte do shader de um arquivo e retorna uma string contendo o código.
+Esta função lê o código-fonte do shader de um arquivo e retorna uma string 
+contendo o código.
 
 ### `CompileAndLinkShaders()`
 
-Essa função cria, compila e vincula shaders (vertex e fragment shaders) para criar um programa OpenGL. Ele usa os shaders localizados em "./shaders/Main.vert" e "./shaders/Main.frag". Os shaders são vinculados ao `programId`.
+Essa função cria, compila e vincula shaders (vertex e fragment shaders) para 
+criar um programa OpenGL. Ele usa os shaders localizados em "./shaders/Main.vert" e 
+"./shaders/Main.frag". Os shaders são vinculados ao `programId`.
 
 ### `CreateCube()`
 
-A função CreateCube() é responsável por criar um cubo 3D para ser renderizado no contexto OpenGL. Esta função define os vértices, cores e índices do cubo e configura os buffers e o Vertex Array Object (VAO) necessários para renderização. Vamos examinar o funcionamento detalhado dessa função:
+A função CreateCube() é responsável por criar um cubo 3D para ser renderizado no 
+contexto OpenGL. Esta função define os vértices, cores e índices do cubo e configura 
+os buffers e o Vertex Array Object (VAO) necessários para renderização. Vamos examinar o 
+funcionamento detalhado dessa função:
 
 Definição de Vértices, Cores e Índices:
 
@@ -61,7 +78,8 @@ Após a cópia dos índices no buffer, o valor de indexOffSet é definido como o
 
 Configuração do VAO:
 
-O VAO é vinculado usando glBindVertexArray(cubeVAO). Dentro deste bloco, as seguintes operações são realizadas:
+O VAO é vinculado usando glBindVertexArray(cubeVAO). Dentro deste bloco, as seguintes 
+operações são realizadas:
 
 O buffer de elementos (índices) é vinculado ao VAO usando glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferId).
 O buffer com os dados dos vértices é vinculado ao VAO usando glBindBuffer(GL_ARRAY_BUFFER, BufferId).
@@ -110,12 +128,30 @@ Ele pega a cor de entrada `colorOut` e a define como a cor de saída
 
 ## Execução
 
-Para executar, entra na pasta `animation3D`
+Para executar, entre na pasta `animation3D`.
 
 Execute:
 `g++ *.cpp  Error/*.cpp Utils/*.cpp -o app -std=c++11 -Wall -lGL -lGLU -lglut -lGLEW -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor && ./app`.
+
+Contém uma versão executável dentro da pasta `animation3D`.
 
 ## Resultado
 
 
 <img src="ImagensReadme/gif-animacao-3d.gif">
+
+## Fontes
+
+As fontes consultadas para fazer esse trabalho foram:
+
+http://www.opengl-tutorial.org/beginners-tutorials/tutorial-4-a-colored-cube/
+
+https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_05
+
+https://www.khronos.org/opengl/wiki/Tutorial2:_VAOs,_VBOs,_Vertex_and_Fragment_Shaders_(C_/_SDL)
+
+https://glm.g-truc.net/0.9.4/api/a00133.html
+
+http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
+
+https://learnopengl.com/Getting-started/Hello-Window

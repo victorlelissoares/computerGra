@@ -1,5 +1,8 @@
 //
-// Created by lelis on 11/1/23.
+// Created by Victor Lelis
+// Matheus Vieira
+// Victor Ramires
+// on 11/1/23.
 //
 #include<string>
 
