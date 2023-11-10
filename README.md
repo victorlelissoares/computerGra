@@ -197,10 +197,14 @@ Execute:
 
 Contém uma versão executável dentro da pasta `animation3D`.
 
-## Resultado
+## Resultados
 
-
+- Execução das transformações de projeção, combinada com as de: Escala, Rotação e Translação.
 <img src="ImagensReadme/gif-animacao-3d.gif">
+
+
+- Execução com as características da anterior, acrescido da iluminação ambiente.
+<img src="ImagensReadme/gif-animacao-3d-ilumi-ambiente.gif">
 
 ## Repositório
 
