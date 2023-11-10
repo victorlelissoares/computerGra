@@ -265,6 +265,10 @@ void desenha(float dt){
 
     glUniformMatrix4fv(matrixId, 1, GL_FALSE, glm::value_ptr(finalMatrix));
 
+    glm::vec3 ambientColor(1.0f, 1.0f, 1.0f); // Cor da luz ambiente (ajuste os valores conforme necessário)
+    int ambientColorLocation = glGetUniformLocation(programId, "ambientColor");
+    glUniform3fv(ambientColorLocation, 1, glm::value_ptr(ambientColor));
+
     glBindVertexArray(cubeVAO);
     {
         //apenas sinaliza o cast, para suprimir o warning
