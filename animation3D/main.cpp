@@ -1,35 +1,4 @@
-#include<iostream>
-#include<string>
-
-#include<GL/glew.h>
-#include <GLFW/glfw3.h>
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
-
-#include "./Utils/utils.h"
-
-//variaveis globais
-const float width = 800;
-const float height = 680;
-
-int matrixId;
-unsigned int programId = 0;
-unsigned int cubeVAO = 0;
-unsigned int indexOffSet = 0;
-glm::mat4 projection(1.f);
-
-//utilizados para fazer a escala do cubo do meio da tela
-float escalaMin = 0.5f; // fator de escala mínimo
-float escalaMax = 1.9f; // fator de escala máximo
-float escalaAtual = 1.0f; //valor inicial do fator de escala
-float incremento = 0.01; //quanto a escala muda por iteração
-bool aumentando = true; //direção inicial da mudança de escala
-
-void CompileAndLinkShaders();
-void criaCubo();
-void inicializaOpenGL();
-void desenha(float dt);
+#include "main.hpp"
 
 int main(){
     GLFWwindow* window;
@@ -223,6 +192,15 @@ void criaCubo(){
     glBindVertexArray(0);
 }
 
+void luzAmbiente(){
+    int ambientColorLocation = glGetUniformLocation(programId, "ambientColor");
+    glUniform3fv(ambientColorLocation, 1, glm::value_ptr(ambientColor));
+
+    //definindo intensidade da cor
+    int ambientIntensityLocation = glGetUniformLocation(programId, "ambientIntensity");
+    glUniform1f(ambientIntensityLocation, ambientIntensity);
+}
+
 void inicializaOpenGL(){
 
     criaCubo();
@@ -236,6 +214,8 @@ void inicializaOpenGL(){
     projection = glm::perspective(glm::radians(45.f), width / height, 0.1f, 10.f);
     projection = projection * glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -5.f));
     //cria a matriz de projeção, que será usada para posicionar os objetos nas coordenadas da cena, que é 5 unidades para dentro da tela (z=-5.f)
+
+    luzAmbiente();
 }
 
 void desenha(float dt){
@@ -264,10 +244,6 @@ void desenha(float dt){
     glm::mat4 finalMatrix = projection * model;
 
     glUniformMatrix4fv(matrixId, 1, GL_FALSE, glm::value_ptr(finalMatrix));
-
-    glm::vec3 ambientColor(1.0f, 1.0f, 1.0f); // Cor da luz ambiente (ajuste os valores conforme necessário)
-    int ambientColorLocation = glGetUniformLocation(programId, "ambientColor");
-    glUniform3fv(ambientColorLocation, 1, glm::value_ptr(ambientColor));
 
     glBindVertexArray(cubeVAO);
     {

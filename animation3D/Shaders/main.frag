@@ -5,10 +5,12 @@ in vec3 colorOut;
 //cor que vai pro proximo passo do pipeline
 out vec4 fragColor;
 
-//cor ambiente
+//luz ambiente
 uniform vec3 ambientColor;
+//intensidade da luz ambiente
+uniform float ambientIntensity;
 
 void main() {
-	vec3 finalColor = colorOut * ambientColor; // objectColor é a cor do objeto
+	vec3 finalColor = colorOut * (ambientColor * ambientIntensity); // objectColor é a cor do objeto
 	fragColor = vec4(finalColor, 1.0);
 }
