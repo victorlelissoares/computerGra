@@ -11,6 +11,9 @@ uniform vec3 ambientColor;
 uniform float ambientIntensity;
 
 void main() {
-	vec3 finalColor = colorOut * (ambientColor * ambientIntensity); // objectColor é a cor do objeto
+	vec3 finalColor = vec3(1.0, 1.0, 1.0);
+	finalColor *= (ambientColor * ambientIntensity);
+
+	finalColor *= colorOut;
 	fragColor = vec4(finalColor, 1.0);
 }
