@@ -140,6 +140,17 @@ void criaCubo(){
             125, 255, 25
     };
 
+    glm::vec3 normals[] = {
+            glm::vec3(0.0f, 0.0f, 1.0f),  // Face da frente
+            glm::vec3(0.0f, 0.0f, -1.0f), // Face de trás
+            glm::vec3(1.0f, 0.0f, 0.0f),  // Face da direita
+            glm::vec3(-1.0f, 0.0f, 0.0f), // Face da esquerda
+            glm::vec3(0.0f, 1.0f, 0.0f),  // Face de cima
+            glm::vec3(0.0f, -1.0f, 0.0f)  // Face de baixo
+    };
+
+
+
     unsigned int indices[] = {
             0,   1,  2,  0,  2,  3,// frente
             4,   5,  6,  4,  6,  7,// trás
@@ -156,38 +167,43 @@ void criaCubo(){
     //Criando buffer único
     glBindBuffer(GL_ARRAY_BUFFER, BufferId);
     glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(vertices) + sizeof(colors) + sizeof(indices), 0, GL_STATIC_DRAW);
+                 sizeof(vertices) + sizeof(colors) + sizeof(normals)+ sizeof(indices), nullptr, GL_STATIC_DRAW);
 
     // Preenchendo sub buffer com vértices
     unsigned int currentOffSet = 0;
-    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-                    sizeof(vertices), vertices);
+    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(vertices), vertices);
 
     // Preenchendo sub buffer com cores
     currentOffSet += sizeof(vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-                    sizeof(colors), colors);
+    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(colors), colors);
+
+    // Preenchendo sub buffer com normais
+    currentOffSet += sizeof(colors);
+    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(normals), normals);
 
     // Preenchendo sub buffer com os indices
-    currentOffSet += sizeof(colors);
-    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet,
-                    sizeof(indices), indices);
-
+    currentOffSet += sizeof(normals);
+    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(indices), indices);
 
     indexOffSet = currentOffSet;
+
 
     glBindVertexArray(cubeVAO);
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BufferId);
         glBindBuffer(GL_ARRAY_BUFFER, BufferId);
 
+        // Atributo de posição do vértice
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
+        // Atributo de cor
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE,
-                              3 * sizeof(GLubyte), (void*)sizeof(vertices));
+        glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(GLubyte), (void*)sizeof(vertices));
 
+        // Atributo de vetor normal
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(vertices) + sizeof(colors)));
     }
     glBindVertexArray(0);
 }
