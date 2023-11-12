@@ -12,20 +12,29 @@ uniform vec3 ambientColor;
 //intensidade da luz ambiente
 uniform float ambientIntensity;
 
-vec3 lightPos = vec3(0, 1, 0);
+vec3 lightPos = vec3(0.5, 1, 0);
+vec3 viewPos = vec3(0, 0, 0);//posição padrão
+
+float specularStrenght = 0.5;
 
 void main() {
-	vec3 finalColor = vec3(.0, .0, .0);
 	//iluminaçao ambiente
-	finalColor += (ambientColor * ambientIntensity);
+	vec3 ambient = (ambientColor * ambientIntensity);
 
 	//iluminação difusa
 	vec3 norm = normalize(normalOut);
 	vec3 lightDir = normalize(lightPos - fragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = diff * ambientColor;
-	finalColor += diffuse;
 
-	finalColor *= colorOut;
+
+	//especular
+	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 reflectDir = reflect(-lightDir, norm);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 512);
+	vec3 specular = specularStrenght * spec * ambientColor;
+
+
+	vec3 finalColor = (ambient + diffuse + specular) * colorOut;
 	fragColor = vec4(finalColor, 1.0);
 }
