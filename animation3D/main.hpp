@@ -24,7 +24,7 @@ glm::mat4 projection(1.f);
 
 //iluminação ambiente
 glm::vec3 ambientColor(0.5, 0.1111117, 0.7222); // Cor da luz ambiente (ajuste os valores conforme necessário)
-float ambientIntensity = 0.4f;
+float ambientIntensity = 0.3f;
 
 //utilizados para fazer a escala do cubo do meio da tela
 float escalaMin = 0.5f; // fator de escala mínimo
