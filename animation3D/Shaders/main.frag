@@ -13,6 +13,7 @@ uniform float ambientIntensity;
 
 void main() {
 	vec3 finalColor = vec3(.0, .0, .0);
+	//iluminaçao ambiente
 	finalColor += (ambientColor * ambientIntensity);
 
 	finalColor *= colorOut;
