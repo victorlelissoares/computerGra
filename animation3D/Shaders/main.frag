@@ -12,10 +12,15 @@ uniform vec3 ambientColor;
 //intensidade da luz ambiente
 uniform float ambientIntensity;
 
+float specularStrenght = 0.5;
+float Kd = 1.0;   // Diffuse reflection coefficient
+float Ks = 0.5;   // Specular reflection coefficient
+
+vec3 diffuseColor = normalize(vec3(255, 52, 255));
+vec3 specularColor = normalize(vec3(255, 155, 200));
+
 vec3 lightPos = vec3(0., 0., -0.5);
 vec3 viewPos = vec3(0, 0, 0);//posição padrão
-
-float specularStrenght = 0.5;
 
 void main() {
 	vec3 norm = normalize(normalOut);
@@ -28,12 +33,12 @@ void main() {
 
 	//iluminação difusa
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * ambientColor;
+	vec3 diffuse = diff * diffuseColor;
 
 	//especular
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 2048);
-	vec3 specular = specularStrenght * spec * ambientColor;
+	vec3 specular = specularStrenght * spec * specularColor;
 
-	vec3 finalColor = (ambient + diffuse + specular) * colorOut;
+	vec3 finalColor = (ambient + (Kd * diffuse) + (Ks * specular) ) * colorOut;
 	fragColor = vec4(finalColor, 1.0);
 }
