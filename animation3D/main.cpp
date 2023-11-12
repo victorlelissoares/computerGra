@@ -249,7 +249,8 @@ void desenha(float dt){
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    // Define a cor de fundo para branco
+    glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
     //desenha o primeiro cubo
     //leva do modelo para o mundo
     glm::mat4 model = glm::rotate(glm::mat4(1.f), +dt, glm::vec3(0.f, 1.f, 0.f));//rotaciona no eixo y
