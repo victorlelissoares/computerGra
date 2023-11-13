@@ -11,6 +11,9 @@
 #include<glm/gtc/type_ptr.hpp>
 
 #include "./Utils/utils.h"
+#include "Libs/imgui.h"
+#include "Libs/imgui_impl_glfw.h"
+#include "Libs/imgui_impl_opengl3.h"
 
 //variaveis globais
 const float width = 800;
@@ -32,6 +35,8 @@ float escalaMax = 1.9f; // fator de escala máximo
 float escalaAtual = 1.0f; //valor inicial do fator de escala
 float incremento = 0.01; //quanto a escala muda por iteração
 bool aumentando = true; //direção inicial da mudança de escala
+
+bool showButton = true;
 
 //funções
 void CompileAndLinkShaders();

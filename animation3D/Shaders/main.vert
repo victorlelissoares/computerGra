@@ -21,6 +21,13 @@ void main() {
 	fragPos = vec3(Matrix * vec4(vertexIn, 1.0));
 	//repassa a cor que veio do programa pra próxima etapa do pipeline(shader de fragmento)
 	colorOut = colorIn;
-	//repassa as normais pra proxima etapa do pipeline
-	normalOut = mat3(transpose(inverse(Matrix))) * normalIn;// Transforma a normal para o espaço da câmera
+
+	// Cálculo das normais (assumindo que você está processando triângulos)
+	vec3 v0 = vec3(Matrix * vec4(vertexIn, 1.0));
+	vec3 v1 = vec3(Matrix * vec4(vertexIn + vec3(0.0, 0.01, 0.0), 1.0)); // Adicionando uma pequena variação para evitar problemas de colinearidade
+	vec3 v2 = vec3(Matrix * vec4(vertexIn + vec3(0.0, 0.0, 0.01), 1.0));
+
+	vec3 edge1 = v1 - v0;
+	vec3 edge2 = v2 - v0;
+	normalOut = normalize(cross(edge1, edge2));
 }

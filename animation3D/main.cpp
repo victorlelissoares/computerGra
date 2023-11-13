@@ -25,6 +25,11 @@ int main(){
         return -1;
     }
 
+    // Inicialização do ImGui
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init( "#version 450" );
+
     inicializaOpenGL();
 
     float tempoInicial = glfwGetTime();
@@ -34,13 +39,37 @@ int main(){
         float tempoAtual = glfwGetTime();
         float deltaTime = tempoAtual - tempoInicial;
 
+        // Processamento de eventos do ImGui
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Conteúdo da janela ImGui
+        ImGui::Begin("Meu GUI");
+        ImGui::SetCursorPos(ImVec2(10, 10));
+        if (ImGui::Button("Clique-me")) {
+            // Ação quando o botão do ImGui é clicado
+            showButton = !showButton;  // Inverte o estado da variável
+        }
+
+        ImGui::End();
+
+        // Renderização do ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         //passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
         desenha(deltaTime);
 
+        // Renderização final
         glfwSwapBuffers(window);
-
         glfwPollEvents();
     }
+
+    // Finalização do ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
@@ -140,17 +169,6 @@ void criaCubo(){
             125, 255, 25
     };
 
-    glm::vec3 normals[] = {
-            glm::vec3(0.0f, 0.0f, 1.0f),  // Face da frente
-            glm::vec3(0.0f, 0.0f, -1.0f), // Face de trás
-            glm::vec3(1.0f, 0.0f, 0.0f),  // Face da direita
-            glm::vec3(-1.0f, 0.0f, 0.0f), // Face da esquerda
-            glm::vec3(0.0f, 1.0f, 0.0f),  // Face de cima
-            glm::vec3(0.0f, -1.0f, 0.0f)  // Face de baixo
-    };
-
-
-
     unsigned int indices[] = {
             0,   1,  2,  0,  2,  3,// frente
             4,   5,  6,  4,  6,  7,// trás
@@ -167,7 +185,7 @@ void criaCubo(){
     //Criando buffer único
     glBindBuffer(GL_ARRAY_BUFFER, BufferId);
     glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(vertices) + sizeof(colors) + sizeof(normals)+ sizeof(indices), nullptr, GL_STATIC_DRAW);
+                 sizeof(vertices) + sizeof(colors) + sizeof(indices), nullptr, GL_STATIC_DRAW);
 
     // Preenchendo sub buffer com vértices
     unsigned int currentOffSet = 0;
@@ -177,12 +195,8 @@ void criaCubo(){
     currentOffSet += sizeof(vertices);
     glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(colors), colors);
 
-    // Preenchendo sub buffer com normais
-    currentOffSet += sizeof(colors);
-    glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(normals), normals);
-
     // Preenchendo sub buffer com os indices
-    currentOffSet += sizeof(normals);
+    currentOffSet += sizeof(colors);
     glBufferSubData(GL_ARRAY_BUFFER, currentOffSet, sizeof(indices), indices);
 
     indexOffSet = currentOffSet;
@@ -200,10 +214,6 @@ void criaCubo(){
         // Atributo de cor
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(GLubyte), (void*)sizeof(vertices));
-
-        // Atributo de vetor normal
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(vertices) + sizeof(colors)));
     }
     glBindVertexArray(0);
 }
