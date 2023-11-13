@@ -34,37 +34,49 @@ int main(){
 
     float tempoInicial = glfwGetTime();
 
-    while (!glfwWindowShouldClose(window)){
-
+    while (!glfwWindowShouldClose(window)) {
         float tempoAtual = glfwGetTime();
         float deltaTime = tempoAtual - tempoInicial;
-
         // Processamento de eventos do ImGui
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         // Conteúdo da janela ImGui
-        ImGui::Begin("Meu GUI");
-        ImGui::SetCursorPos(ImVec2(10, 10));
-        if (ImGui::Button("Clique-me")) {
-            // Ação quando o botão do ImGui é clicado
-            showButton = !showButton;  // Inverte o estado da variável
+        if (ImGui::BeginMainMenuBar()) {
+            // Menu "Arquivo"
+            if (ImGui::BeginMenu("Iluminação")) {
+                if (ImGui::MenuItem("Ambiente")) {
+                    // Lógica quando o item "Abrir" é selecionado
+                }
+                if (ImGui::MenuItem("Especular")) {
+                    // Lógica quando o item "Salvar" é selecionado
+                }
+                if (ImGui::MenuItem("Difusa")) {
+                    // Lógica quando o item "Salvar" é selecionado
+                }
+                if (ImGui::MenuItem("Phong")) {
+                    // Lógica quando o item "Salvar" é selecionado
+                }
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
         }
 
-        ImGui::End();
+        // Renderização final
+        glfwPollEvents();
+
+        // passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
+        desenha(deltaTime);
 
         // Renderização do ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        //passa o tempo decorrido para realizar/aplicar variações nas matrizes de modelToWorld
-        desenha(deltaTime);
-
-        // Renderização final
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
+
 
     // Finalização do ImGui
     ImGui_ImplOpenGL3_Shutdown();
