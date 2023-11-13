@@ -218,15 +218,6 @@ void criaCubo(){
     glBindVertexArray(0);
 }
 
-void luzAmbiente(){
-    int ambientColorLocation = glGetUniformLocation(programId, "ambientColor");
-    glUniform3fv(ambientColorLocation, 1, glm::value_ptr(ambientColor));
-
-    //definindo intensidade da cor
-    int ambientIntensityLocation = glGetUniformLocation(programId, "ambientIntensity");
-    glUniform1f(ambientIntensityLocation, ambientIntensity);
-}
-
 void inicializaOpenGL(){
 
     criaCubo();
@@ -240,8 +231,6 @@ void inicializaOpenGL(){
     projection = glm::perspective(glm::radians(45.f), width / height, 0.1f, 10.f);
     projection = projection * glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -5.f));
     //cria a matriz de projeção, que será usada para posicionar os objetos nas coordenadas da cena, que é 5 unidades para dentro da tela (z=-5.f)
-
-    luzAmbiente();
 }
 
 void desenha(float dt){
