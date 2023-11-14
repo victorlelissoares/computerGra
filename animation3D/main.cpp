@@ -27,6 +27,9 @@ int main(){
 
     // Inicialização do ImGui
     ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= 0;
+    io.Fonts->AddFontDefault();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init( "#version 450" );
 
@@ -45,7 +48,7 @@ int main(){
         // Conteúdo da janela ImGui
         if (ImGui::BeginMainMenuBar()) {
             // Menu "Arquivo"
-            if (ImGui::BeginMenu("Iluminacao")) {
+            if (ImGui::BeginMenu(u8"Ilumina\u00E7\u00E3o")) {
                 if (ImGui::MenuItem("Ambiente")) {
                     string ambientShaderPath = "Shaders/ambient.frag";
                     CompileAndLinkShaders(ambientShaderPath);
