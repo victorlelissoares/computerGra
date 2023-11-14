@@ -177,6 +177,7 @@ são a distânca da câmera ao plano de frente, e ao plano de fundo.
 <img src="ImagensReadme/A-viewing-frustum-defined-in-OpenGL-to-emulate-the-real-camera.png">
 
 ## Shader de Vértices
+
 O shader de vértices recebe duas váriaveis de entrada, 
 `in layout (location=0) vec3 vertexIn` e 
 `in layout (location=1) vec3 colorIn`, que são, respectivamente, 
@@ -184,16 +185,57 @@ os vértices que vem do programa principal e as cores que serão usadas na etapa
 de repassar a cor de entrada, `colorIn` para o próximo passo do pipeline. Para determinar o `gl_Position`, os vértices, `vertexIn` são multiplicados 
 por uma variável uniforme, `uniform mat4 Matrix`, que é a matriz que, transforma de cordenadas locais, para globais e coordenadas globais para de projeção.
 
+Além disso, O shader de vértices calcula as normais de cada vértices 
+, e repassa a próxima etapa do pipeline por meio da variável `out vec3 normalOut`. 
+
 ## Shader de Fragmento
+
+### no Ilumination
 Ele pega a cor de entrada `colorOut` e a define como a cor de saída 
 `fragColor`, tornando o fragmento de pixel completamente opaco.
+
+### Ambient
+Este shader de fragmentos calcula a iluminação ambiente para um 
+fragmento usando um modelo simples de atenuação baseado na distância 
+entre a fonte de luz e o fragmento. A cor resultante é determinada 
+pela multiplicação da cor ambiente, a cor do fragmento do passo anterior
+e a atenuação, e é enviada para o próximo estágio do pipeline gráfico.
+
+### Diffuse
+Este shader de fragmentos calcula a iluminação difusa de um objeto, 
+considerando a posição da luz, a normal do fragmento e os coeficientes 
+de reflexão difusa, ambiental e especular. A atenuação da luz com base 
+na distância também é aplicada. A cor final é então enviada para o próximo 
+estágio do pipeline gráfico. O objeto é iluminado de acordo com a equação de 
+iluminação difusa, considerando as cores difusa e ambiente, a posição da luz 
+e a normal do fragmento. O resultado é modulado pela cor de saída do passo 
+anterior e atenuado pela distância à fonte de luz.
+
+### Specular
+Este shader de fragmentos implementa iluminação especular em um objeto. 
+Ele calcula a reflexão especular com base na posição da luz, posição 
+do observador e normal do fragmento. O resultado é combinado com a cor
+de saída do passo anterior, atenuado pela distância da fonte de luz, e 
+enviado para o próximo estágio do pipeline gráfico. O coeficiente de reflexão
+especular (Ks) e a cor da reflexão especular (specularColor) são parâmetros 
+ajustáveis.
+
+### Phong
+Este shader de fragmentos calcula a iluminação de um objeto usando o 
+modelo de iluminação de Phong. Ele considera iluminação ambiente, difusa
+e especular, usando coeficientes de reflexão e cores específicos. Além disso,
+incorpora atenuação com base na distância da fonte de luz ao fragmento. 
+A última linha realiza a correção gama na cor final antes de atribuí-la à 
+variável fragColor, que é enviada para o próximo estágio do pipeline gráfico.
 
 ## Execução
 
 Para executar, entre na pasta `animation3D`.
 
-Execute gerar o executável e executar:
-`make` e `./app`.
+Gere o executável e execute-o:
+`make` 
+
+`./app`.
 
 ## Resultados
 
