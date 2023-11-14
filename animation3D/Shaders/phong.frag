@@ -34,7 +34,7 @@ void main() {
 	//especular
 	vec3 reflex = 2 * norm * cosTeta - normalize(lightPos);
 	float cosAlfa = clamp(dot(viewPos,reflex),0.,1.);
-	vec3 specular = specularColor * Ks * pow(cosAlfa, 2064);
+	vec3 specular = specularColor * Ks * pow(cosAlfa, 20);
 
 	//Atenuação
 	float dist = length(lightPos - fragPos);

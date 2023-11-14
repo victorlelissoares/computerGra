@@ -41,6 +41,6 @@ bool showButton = true;
 //funções
 void CompileAndLinkShaders();
 void criaCubo();
-void inicializaOpenGL();
+void CompileAndLinkShaders(const std::string& shaderPath);
 void desenha(float dt);
-void luzAmbiente();
+void inicializaOpenGL();

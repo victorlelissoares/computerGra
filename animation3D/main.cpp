@@ -45,18 +45,26 @@ int main(){
         // Conteúdo da janela ImGui
         if (ImGui::BeginMainMenuBar()) {
             // Menu "Arquivo"
-            if (ImGui::BeginMenu("Iluminação")) {
+            if (ImGui::BeginMenu("Iluminacao")) {
                 if (ImGui::MenuItem("Ambiente")) {
-                    // Lógica quando o item "Abrir" é selecionado
+                    string ambientShaderPath = "Shaders/ambient.frag";
+                    CompileAndLinkShaders(ambientShaderPath);
                 }
                 if (ImGui::MenuItem("Especular")) {
-                    // Lógica quando o item "Salvar" é selecionado
+                    string speculartShaderPath = "Shaders/specular.frag";
+                    CompileAndLinkShaders(speculartShaderPath);
                 }
                 if (ImGui::MenuItem("Difusa")) {
-                    // Lógica quando o item "Salvar" é selecionado
+                    string diffuseShaderPath = "Shaders/diffuse.frag";
+                    CompileAndLinkShaders(diffuseShaderPath);
                 }
                 if (ImGui::MenuItem("Phong")) {
-                    // Lógica quando o item "Salvar" é selecionado
+                    string phongShaderPath = "Shaders/phong.frag";
+                    CompileAndLinkShaders(phongShaderPath);
+                }
+                if (ImGui::MenuItem("Desligar")) {
+                    string noIluminationShaderPath = "Shaders/noIlumination.frag";
+                    CompileAndLinkShaders(noIluminationShaderPath);
                 }
                 ImGui::EndMenu();
             }
@@ -234,7 +242,7 @@ void inicializaOpenGL(){
 
     criaCubo();
     //compila e linka os Shaders de fragmentos e de vétices, resultando no programa (shade de vérticer+fragmento)
-    CompileAndLinkShaders();
+    CompileAndLinkShaders("Shaders/noIlumination.frag");
 
     //linka a variavel matriz do shader de vétice ao programaId
     matrixId = glGetUniformLocation(programId, "Matrix");
@@ -315,7 +323,7 @@ void desenha(float dt){
     glBindVertexArray(0);
 }
 
-void CompileAndLinkShaders(){
+void CompileAndLinkShaders(const std::string& shaderPath){
     // 1. Criamos os nossos Objetos:
     //    Programa = Vertex Shader + Fragment Shader
     programId = glCreateProgram();
@@ -326,7 +334,7 @@ void CompileAndLinkShaders(){
     //    para o tipo const char* = código fonte final
     std::string vsCode, fsCode;
     vsCode = ReadProgramSource("Shaders/main.vert");
-    fsCode = ReadProgramSource("Shaders/main.frag");
+    fsCode = ReadProgramSource(shaderPath);
 
     const char* vsFinalCode = vsCode.c_str();
     const char* fsFinalCode = fsCode.c_str();
