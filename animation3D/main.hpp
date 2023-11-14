@@ -36,10 +36,7 @@ float escalaAtual = 1.0f; //valor inicial do fator de escala
 float incremento = 0.01; //quanto a escala muda por iteração
 bool aumentando = true; //direção inicial da mudança de escala
 
-bool showButton = true;
-
 //funções
-void CompileAndLinkShaders();
 void criaCubo();
 void CompileAndLinkShaders(const std::string& shaderPath);
 void desenha(float dt);
