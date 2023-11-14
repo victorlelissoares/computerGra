@@ -212,7 +212,7 @@ Execute gerar o executável e executar:
 - Iluminação de Phong.
   <img src="ImagensReadme/gif-animacao-3d-ilumi-phong.gif">
 
--Demonstração de todas as opções
+- Demonstração de todas as opções
   <img src="ImagensReadme/gif-animacao-3d-ilumi-total.gif">
 ## Repositório
 
