@@ -25,10 +25,6 @@ unsigned int cubeVAO = 0;
 unsigned int indexOffSet = 0;
 glm::mat4 projection(1.f);
 
-//iluminação ambiente
-glm::vec3 ambientColor(0.5, 1, 1); // Cor da luz ambiente (ajuste os valores conforme necessário)
-float ambientIntensity = 0.3f;
-
 //utilizados para fazer a escala do cubo do meio da tela
 float escalaMin = 0.5f; // fator de escala mínimo
 float escalaMax = 1.9f; // fator de escala máximo
