@@ -192,20 +192,28 @@ Ele pega a cor de entrada `colorOut` e a define como a cor de saída
 
 Para executar, entre na pasta `animation3D`.
 
-Execute:
-` g++ *.cpp  Utils/*.cpp -o app -std=c++11 -Wall -lGL -lGLU -lglut -lGLEW -lglfw -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor && ./app`.
-
-Contém uma versão executável dentro da pasta `animation3D`.
+Execute gerar o executável e executar:
+`make` e `./app`.
 
 ## Resultados
 
 - Execução das transformações de projeção, combinada com as de: Escala, Rotação e Translação.
 <img src="ImagensReadme/gif-animacao-3d.gif">
 
-
-- Execução com as características da anterior, acrescido da iluminação ambiente.
+- Iluminação ambiente.
 <img src="ImagensReadme/gif-animacao-3d-ilumi-ambiente.gif">
 
+- Iluminação Especular.
+  <img src="ImagensReadme/gif-animacao-3d-ilumi-especular.gif">
+
+- Iluminação Difusa.
+  <img src="ImagensReadme/gif-animacao-3d-ilumi-difusa.gif">
+
+- Iluminação de Phong.
+  <img src="ImagensReadme/gif-animacao-3d-ilumi-phong.gif">
+
+-Demonstração de todas as opções
+  <img src="ImagensReadme/gif-animacao-3d-ilumi-total.gif">
 ## Repositório
 
 O código fonte está disponível no repositório:
@@ -226,3 +234,5 @@ https://glm.g-truc.net/0.9.4/api/a00133.html
 http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
 
 https://learnopengl.com/Getting-started/Hello-Window
+
+https://learnopengl.com/Lighting/Basic-Lighting
