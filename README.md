@@ -1,4 +1,4 @@
-# Animação 3D - Projeção Perspectiva (Frustrum), Escala, Rotação e Translação
+# Animação 3D - Projeção Perspectiva (Frustrum), Escala, Rotação, Translação e Modelos de Iluminação.
 
 Este documento fornece uma documentação/explicação sobre o código 
 elaborado e um detalhamento dos recursos utilizados para realizar o mesmo, bem como seu resultado

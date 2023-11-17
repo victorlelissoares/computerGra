@@ -9,7 +9,7 @@ int main(){
     }
 
     /* Cria uma janela de tamanho 800x600 no contexto opengl */
-    window = glfwCreateWindow(width, height, "Animacao 3D - projecao perpectiva, rotacao, translacao e escala", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Animacao 3D - projecao perpectiva, rotacao, translacao, escala e modelos de iluminacao", NULL, NULL);
     if (!window){
         fprintf(stderr, "Janela GLFW não foi criada!");
         glfwTerminate();
@@ -45,6 +45,10 @@ int main(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        ImGui::Begin("Ilumina\u00E7\u00E3o Atual");
+        ImGui::Text("%s", nomeShaderAtual);
+        ImGui::End();
+
         // Conteúdo da janela ImGui
         if (ImGui::BeginMainMenuBar()) {
             // Menu "Arquivo"
@@ -52,22 +56,27 @@ int main(){
                 if (ImGui::MenuItem("Ambiente")) {
                     string ambientShaderPath = "Shaders/ambient.frag";
                     CompileAndLinkShaders(ambientShaderPath);
+                    nomeShaderAtual = "Ambiente";
                 }
                 if (ImGui::MenuItem("Especular")) {
                     string speculartShaderPath = "Shaders/specular.frag";
                     CompileAndLinkShaders(speculartShaderPath);
+                    nomeShaderAtual = "Especular";
                 }
                 if (ImGui::MenuItem("Difusa")) {
                     string diffuseShaderPath = "Shaders/diffuse.frag";
                     CompileAndLinkShaders(diffuseShaderPath);
+                    nomeShaderAtual = "Difusa";
                 }
                 if (ImGui::MenuItem("Phong")) {
                     string phongShaderPath = "Shaders/phong.frag";
                     CompileAndLinkShaders(phongShaderPath);
+                    nomeShaderAtual = "Phong";
                 }
                 if (ImGui::MenuItem("Desligar")) {
                     string noIluminationShaderPath = "Shaders/noIlumination.frag";
                     CompileAndLinkShaders(noIluminationShaderPath);
+                    nomeShaderAtual = "Sem Ilumina\u00E7\u00E3o";
                 }
                 ImGui::EndMenu();
             }

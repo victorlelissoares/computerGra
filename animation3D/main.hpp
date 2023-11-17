@@ -31,6 +31,7 @@ float escalaMax = 1.9f; // fator de escala máximo
 float escalaAtual = 1.0f; //valor inicial do fator de escala
 float incremento = 0.01; //quanto a escala muda por iteração
 bool aumentando = true; //direção inicial da mudança de escala
+const char *nomeShaderAtual = "Sem iluminação";
 
 //funções
 void criaCubo();

@@ -6,7 +6,6 @@ uniform mat4 Matrix;
 //sendo, respectivamente, as coordenadas dos vértices e as cores
 in layout (location=0) vec3 vertexIn;
 in layout (location=1) vec3 colorIn;
-in layout (location=2) vec3 normalIn;
 //cor de saida, que é a de entrada, que será repassada a próxima etapa do pipeline
 out vec3 colorOut;
 //normais das faces que vem do programa principal
@@ -22,7 +21,7 @@ void main() {
 	//repassa a cor que veio do programa pra próxima etapa do pipeline(shader de fragmento)
 	colorOut = colorIn;
 
-	// Cálculo das normais (assumindo que você está processando triângulos)
+	// Cálculo das normais
 	vec3 v0 = vec3(Matrix * vec4(vertexIn, 1.0));
 	vec3 v1 = vec3(Matrix * vec4(vertexIn + vec3(0.0, 0.01, 0.0), 1.0)); // Adicionando uma pequena variação para evitar problemas de colinearidade
 	vec3 v2 = vec3(Matrix * vec4(vertexIn + vec3(0.0, 0.0, 0.01), 1.0));
