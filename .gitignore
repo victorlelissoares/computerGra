@@ -2,3 +2,4 @@ cmake-build-debug
 CMakeLists.txt
 .idea
 /animation3D/imgui.ini
+cmake-build-debug
